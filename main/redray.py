@@ -36,9 +36,5 @@ class Redray(threading.Thread):
                 inputVal0 = readadc_spidev(0)
                 volt = convert_voltage(inputVal0)
                 print(distance(volt))
-                sleep(0.2)
-
-        except KeyboardInterrupt:
-            pass
-
-        spi.close()
+                sleep(0.02)
+            spi.close()
