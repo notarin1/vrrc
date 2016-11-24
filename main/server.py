@@ -76,10 +76,12 @@ def acceralation(value):
     servo.setValue(SERVO_1_PIN, value)
 
 
+# test用のhandler
 class SendMessageHandler(RequestHandler):
-    def get(self):
-        enqueue_event(True)
-
+    def get(self, *args):
+        data = self.get_argument("data")
+        if data is not None:
+            enqueue_event(data)
 
 application = tornado.web.Application([
     (r'/ws', WSHandler),
@@ -95,7 +97,7 @@ command_dict = {
 
 # interval push message sample
 rt = main.RepeatedTimer.RepeatedTimer(1, WSHandler.write_to_clients, "inoue")
-main.RepeatedTimer.RepeatedTimer(1, queue_routine, WSHandler.write_to_clients)
+main.RepeatedTimer.RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
 ir = IrDriver(ir_notify, 10)
 servo = main.servo_drv.ServoDriver()
 
