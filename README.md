@@ -8,3 +8,24 @@ VRラジコン
 # websocket
 URI: ws:/localhost:9090/ws
 Chromeのwebsocketお試しplugin を使うとテストしやすい
+
+# websocket format
+JSON。
+command&valueの配列を垂れ流しで送信
+
+例：
+[
+  {
+    "command": "steering",
+    "value": 35
+  },
+  {
+    "command": "acceralation",
+    "value": 20
+  },
+  {
+    "command": "steering",
+    "value": 37
+  },
+  ...
+]
