@@ -14,6 +14,7 @@ JSON。
 command&valueの配列を垂れ流しで送信
 
 例：
+```
 [
   {
     "command": "steering",
@@ -29,3 +30,4 @@ command&valueの配列を垂れ流しで送信
   },
   ...
 ]
+```
