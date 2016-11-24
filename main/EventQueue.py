@@ -10,9 +10,8 @@ def enqueue_event(event):
 
 # 100msec周期で呼ばれて、queueにデータがあればwebsocketで値を返す
 def queue_routine(function):
-    while True:
-        if not event_queue.empty():
-            result = event_queue.get().result()
-            if result is not str:
-                result = str(result)
-            function(result)
+    if not event_queue.empty():
+        result = event_queue.get().result()
+        if result is not str:
+            result = str(result)
+        function(result)

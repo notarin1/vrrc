@@ -25,9 +25,8 @@ sys.path.append('/home/pi/vrrc')
 
 from main.EventQueue import *
 from main.IrDriver import *
-import main.servo_drv
 from main.servo_drv import *
-
+from main.RepeatedTimer import *
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -111,8 +110,8 @@ command_dict = {
 }
 
 # interval push message sample
-health_check = main.RepeatedTimer.RepeatedTimer(1, WSHandler.write_to_clients, "active")
-main.RepeatedTimer.RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
+health_check = RepeatedTimer(1, WSHandler.write_to_clients, "active")
+RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
 ir = IrDriver(ir_notify, 10)
 servo = ServoDriver(0.1)
 
