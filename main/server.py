@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Fail-safe: Wifiが切れたりした時にAMP出力を停止して、Steeringを中立に戻すようなことをやっときたい
 # commandを受け取って、ステアリングとアンプの制御をする。
 # サーボコントローラを別クラスで作って、そこにコマンド情報を引き渡す
@@ -44,6 +45,10 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         self.write_message("The server says: 'Hello'. Connection was accepted.")
         self.clients.append(self)
+        if len(self.clients) == 1:
+            health_check.start()
+            servo.start()
+            ir.start()
 
     @logger
     def on_message(self, message):
@@ -56,7 +61,10 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     @logger
     def on_close(self):
         self.clients.remove(self)
-#        rt.stop()
+        if len(self.clients) == 0:
+            health_check.stop()
+            ir.stop()
+            servo.stop()
 
     @classmethod
     def write_to_clients(cls, message):
@@ -67,16 +75,22 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 def ir_notify(value):
     WSHandler.write_to_clients("ir_notify" + value)
 
+
+@logger
 def steering(value):
     servo.setValue(SERVO_0_PIN, value)
 
-def acceralation(value):
+
+@logger
+def acceleration(value):
     servo.setValue(SERVO_1_PIN, value)
+
 
 class SendMessageHandler(RequestHandler):
     def get(self):
         input = {'aa'}
         producer(input)
+
 
 application = tornado.web.Application([
     (r'/ws', WSHandler),
@@ -87,13 +101,13 @@ application = tornado.web.Application([
 
 command_dict = {
     'steering': steering,
-    'acceralation': acceralation
+    'acceleration': acceleration
 }
 
 # interval push message sample
-rt = main.RepeatedTimer.RepeatedTimer(1, WSHandler.write_to_clients, "inoue")
+health_check = main.RepeatedTimer.RepeatedTimer(1, WSHandler.write_to_clients, "active")
 ir = IrDriver(ir_notify, 10)
-servo = main.servo_drv.ServoDriver()
+servo = ServoDriver(0.1)
 
 if __name__ == "__main__":
     IOLoop.current().run_sync(start_consumer)
