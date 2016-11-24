@@ -87,5 +87,18 @@ ir = IrDriver(ir_notify, 10)
 servo = main.servo_drv.ServoDriver()
 
 if __name__ == "__main__":
-    application.listen(9090)
-    tornado.ioloop.IOLoop.instance().start()
+    threads = []
+    try:
+        redray = main.Redray()
+        threads.append(redray)
+        redray.start()
+        application.listen(9090)
+        tornado.ioloop.IOLoop.instance().start()
+        while redray.is_alive():
+            redray.join(1)
+    except KeyboardInterrupt:
+        for thread in threads:
+            thread.running = False
+        while threading.active_count() > 1:
+            print("waiting shutdown. thread count={}".format(threading.active_count()))
+            sleep(1)
