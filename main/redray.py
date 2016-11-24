@@ -35,6 +35,8 @@ class Redray(threading.Thread):
             while self.running:
                 inputVal0 = readadc_spidev(0)
                 volt = convert_voltage(inputVal0)
-                print(distance(volt))
+                dist = (distance(volt))
+                print("{ \"distance\": {} }".format(dist))
+                main.enqueue_event("{ \"distance\": {} }".format(dist))
                 sleep(0.02)
             spi.close()
