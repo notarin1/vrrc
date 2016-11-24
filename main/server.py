@@ -12,6 +12,7 @@
 # ws:/localhost:9090/ws
 #
 import json
+import sys
 
 import tornado.ioloop
 import tornado.template
@@ -19,8 +20,11 @@ import tornado.web
 import tornado.websocket
 from tornado.web import RequestHandler
 
+sys.path.append('/home/pi/vrrc')
+
 from main.EventQueue import *
 from main.IrDriver import *
+import main.servo_drv
 from main.servo_drv import *
 
 
