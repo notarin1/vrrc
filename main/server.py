@@ -26,7 +26,7 @@ from main.EventQueue import *
 from main.IrDriver import *
 import main.servo_drv
 from main.servo_drv import *
-
+from main.RepeatedTimer import *
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -96,8 +96,8 @@ command_dict = {
 }
 
 # interval push message sample
-rt = main.RepeatedTimer.RepeatedTimer(1, WSHandler.write_to_clients, "inoue")
-main.RepeatedTimer.RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
+rt = RepeatedTimer(1, WSHandler.write_to_clients, "inoue")
+RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
 ir = IrDriver(ir_notify, 10)
 servo = main.servo_drv.ServoDriver()
 
