@@ -19,10 +19,8 @@ import tornado.web
 import tornado.websocket
 from tornado.web import RequestHandler
 
+from main.EventQueue import *
 from main.IrDriver import *
-from main.MsgRcv import *
-from main.utils import *
-import main.servo_drv
 from main.servo_drv import *
 
 
@@ -65,16 +63,19 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 def ir_notify(value):
     WSHandler.write_to_clients("ir_notify" + value)
 
+
 def steering(value):
     servo.setValue(SERVO_0_PIN, value)
+
 
 def acceralation(value):
     servo.setValue(SERVO_1_PIN, value)
 
+
 class SendMessageHandler(RequestHandler):
     def get(self):
-        input = {'aa'}
-        producer(input)
+        enqueue_event(True)
+
 
 application = tornado.web.Application([
     (r'/ws', WSHandler),
@@ -90,10 +91,11 @@ command_dict = {
 
 # interval push message sample
 rt = main.RepeatedTimer.RepeatedTimer(1, WSHandler.write_to_clients, "inoue")
+main.RepeatedTimer.RepeatedTimer(1, queue_routine, WSHandler.write_to_clients)
 ir = IrDriver(ir_notify, 10)
 servo = main.servo_drv.ServoDriver()
 
 if __name__ == "__main__":
-    IOLoop.current().run_sync(start_consumer)
+    #    IOLoop.current().run_sync(start_consumer)
     application.listen(9090)
     tornado.ioloop.IOLoop.instance().start()
