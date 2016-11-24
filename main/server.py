@@ -22,6 +22,8 @@ from tornado.web import RequestHandler
 from main.IrDriver import *
 from main.MsgRcv import *
 from main.utils import *
+import main.servo_drv
+from main.servo_drv import *
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -46,12 +48,13 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         data = json.loads(message)
         if isinstance(data, list):
             for d in data:
-                self.write_message("Received: " + d['command'] + "=" + str(d['value']))
+                self.write_message(d['command'] + ":" + str(d['value']))
+                command_dict.get(d['command'])(d['value'])
 
     @logger
     def on_close(self):
         self.clients.remove(self)
-        rt.stop()
+#        rt.stop()
 
     @classmethod
     def write_to_clients(cls, message):
@@ -62,6 +65,11 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 def ir_notify(value):
     WSHandler.write_to_clients("ir_notify" + value)
 
+def steering(value):
+    servo.setValue(SERVO_0_PIN, value)
+
+def acceralation(value):
+    servo.setValue(SERVO_1_PIN, value)
 
 class SendMessageHandler(RequestHandler):
     def get(self):
@@ -75,9 +83,15 @@ application = tornado.web.Application([
     (r"/(.*)", tornado.web.StaticFileHandler, {"path": "./resources"}),
 ])
 
+command_dict = {
+    'steering': steering,
+    'acceralation': acceralation
+}
+
 # interval push message sample
 rt = main.RepeatedTimer.RepeatedTimer(1, WSHandler.write_to_clients, "inoue")
 ir = IrDriver(ir_notify, 10)
+servo = main.servo_drv.ServoDriver()
 
 if __name__ == "__main__":
     IOLoop.current().run_sync(start_consumer)
