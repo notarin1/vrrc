@@ -17,9 +17,10 @@ import tornado.ioloop
 import tornado.template
 import tornado.web
 import tornado.websocket
+from tornado.web import RequestHandler
 
-import main.RepeatedTimer
 from main.IrDriver import *
+from main.MsgRcv import *
 from main.utils import *
 
 
@@ -62,9 +63,15 @@ def ir_notify(value):
     WSHandler.write_to_clients("ir_notify" + value)
 
 
+class SendMessageHandler(RequestHandler):
+    def get(self):
+        input = {'aa'}
+        producer(input)
+
 application = tornado.web.Application([
     (r'/ws', WSHandler),
     (r'/', MainHandler),
+    (r'/msg', SendMessageHandler),
     (r"/(.*)", tornado.web.StaticFileHandler, {"path": "./resources"}),
 ])
 
@@ -73,5 +80,6 @@ rt = main.RepeatedTimer.RepeatedTimer(1, WSHandler.write_to_clients, "inoue")
 ir = IrDriver(ir_notify, 10)
 
 if __name__ == "__main__":
+    IOLoop.current().run_sync(start_consumer)
     application.listen(9090)
     tornado.ioloop.IOLoop.instance().start()
