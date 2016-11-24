@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Fail-safe: Wifiが切れたりした時にAMP出力を停止して、Steeringを中立に戻すようなことをやっときたい
 # commandを受け取って、ステアリングとアンプの制御をする。
 # サーボコントローラを別クラスで作って、そこにコマンド情報を引き渡す
@@ -24,7 +25,6 @@ sys.path.append('/home/pi/vrrc')
 
 from main.EventQueue import *
 from main.IrDriver import *
-import main.servo_drv
 from main.servo_drv import *
 from main.RepeatedTimer import *
 
@@ -44,6 +44,10 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         self.write_message("The server says: 'Hello'. Connection was accepted.")
         self.clients.append(self)
+        if len(self.clients) == 1:
+            health_check.start()
+            servo.start()
+            ir.start()
 
     @logger
     def on_message(self, message):
@@ -56,7 +60,10 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     @logger
     def on_close(self):
         self.clients.remove(self)
-#        rt.stop()
+        if len(self.clients) == 0:
+            health_check.stop()
+            ir.stop()
+            servo.stop()
 
     @classmethod
     def write_to_clients(cls, message):
@@ -68,8 +75,14 @@ def ir_notify(value):
     WSHandler.write_to_clients("ir_notify" + value)
 
 
+@logger
 def steering(value):
     servo.setValue(SERVO_0_PIN, value)
+
+
+@logger
+def acceleration(value):
+    servo.setValue(SERVO_1_PIN, value)
 
 
 def acceralation(value):
@@ -83,6 +96,7 @@ class SendMessageHandler(RequestHandler):
         if data is not None:
             enqueue_event(data)
 
+
 application = tornado.web.Application([
     (r'/ws', WSHandler),
     (r'/', MainHandler),
@@ -92,14 +106,14 @@ application = tornado.web.Application([
 
 command_dict = {
     'steering': steering,
-    'acceralation': acceralation
+    'acceleration': acceleration
 }
 
 # interval push message sample
-rt = RepeatedTimer(1, WSHandler.write_to_clients, "inoue")
+health_check = RepeatedTimer(1, WSHandler.write_to_clients, "active")
 RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
 ir = IrDriver(ir_notify, 10)
-servo = main.servo_drv.ServoDriver()
+servo = ServoDriver(0.1)
 
 if __name__ == "__main__":
     #    IOLoop.current().run_sync(start_consumer)

@@ -9,13 +9,13 @@ class IrDriver:
     def __init__(self, notify_callback, threshold):
         self.threshold = threshold
         self.notify_callback = notify_callback
-        rt = main.RepeatedTimer.RepeatedTimer(0.2, self.check_ir, "IR")
+        self.rt = main.RepeatedTimer.RepeatedTimer(0.2, self.check_ir, "IR")
 
     def start(self):
-        pass
+        self.rt.start()
 
     def stop(self):
-        pass
+        self.rt.stop()
 
     def check_ir(self, message):
         # 0.2sec周期で呼び出される
