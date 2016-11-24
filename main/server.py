@@ -78,16 +78,16 @@ def ir_notify(value):
 
 @logger
 def steering(value):
-    servo.setValue(SERVO_0_PIN, value)
+    servo.setValue(SERVO_0_GPIO, value)
 
 
 @logger
 def acceleration(value):
-    servo.setValue(SERVO_1_PIN, value)
+    servo.setValue(SERVO_1_GPIO, value)
 
 
 def acceralation(value):
-    servo.setValue(SERVO_1_PIN, value)
+    servo.setValue(SERVO_1_GPIO, value)
 
 
 # test用のhandler
