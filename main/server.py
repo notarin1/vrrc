@@ -23,8 +23,8 @@ from tornado.web import RequestHandler
 
 sys.path.append('/home/pi/vrrc')
 
+from main.EventQueue import *
 from main.IrDriver import *
-from main.MsgRcv import *
 import main.servo_drv
 from main.servo_drv import *
 
@@ -86,10 +86,16 @@ def acceleration(value):
     servo.setValue(SERVO_1_PIN, value)
 
 
+def acceralation(value):
+    servo.setValue(SERVO_1_PIN, value)
+
+
+# test用のhandler
 class SendMessageHandler(RequestHandler):
-    def get(self):
-        input = {'aa'}
-        producer(input)
+    def get(self, *args):
+        data = self.get_argument("data")
+        if data is not None:
+            enqueue_event(data)
 
 
 application = tornado.web.Application([
@@ -106,10 +112,11 @@ command_dict = {
 
 # interval push message sample
 health_check = main.RepeatedTimer.RepeatedTimer(1, WSHandler.write_to_clients, "active")
+main.RepeatedTimer.RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
 ir = IrDriver(ir_notify, 10)
 servo = ServoDriver(0.1)
 
 if __name__ == "__main__":
-    IOLoop.current().run_sync(start_consumer)
+    #    IOLoop.current().run_sync(start_consumer)
     application.listen(9090)
     tornado.ioloop.IOLoop.instance().start()
