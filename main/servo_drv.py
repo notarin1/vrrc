@@ -29,8 +29,6 @@ class ServoDriver(object):
         wiringpi.pwmSetMode(0)
         wiringpi.pwmSetRange(1024)
         wiringpi.pwmSetClock(375)
-        wiringpi.pwmWrite(SERVO_0_GPIO, 0)
-        wiringpi.pwmWrite(SERVO_1_GPIO, 0)
         pass
         self.rt = RepeatedTimer(interval, self.writeValue, "SERVO")
 
