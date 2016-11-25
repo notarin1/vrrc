@@ -36,7 +36,7 @@ class SendMessageHandler(tornado.web.RequestHandler):
             send_message(data)
 
 
-class WSHandler(tornado.websocket.WebSocketHandler, Observer):
+class WSHandler(tornado.websocket.WebSocketHandler):
     clients = []
 
     def check_origin(self, origin):
@@ -70,17 +70,23 @@ class WSHandler(tornado.websocket.WebSocketHandler, Observer):
             ir.stop()
             servo.stop()
 
+    @classmethod
+    def write_to_clients(cls, message):
+        for client in cls.clients:
+            client.write_message(message)
+
+
+class AutoBrake(Observer):
+
+    def __init__(self):
+        pass
+
     def update(self, braking):
         if braking:
             servo.setValue(SERVO_1_GPIO, -10)
             send_message("braking")
         else:
             send_message("avoid object")
-
-    @classmethod
-    def write_to_clients(cls, message):
-        for client in cls.clients:
-            client.write_message(message)
 
 
 def ir_notify(value):
@@ -126,6 +132,7 @@ RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
 ir = IrDriver(ir_notify, 10)
 servo = ServoDriver(0.05)
 redray = Redray()
+redray.observers.append(AutoBrake())
 
 if __name__ == "__main__":
     threads = []

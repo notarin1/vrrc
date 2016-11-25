@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
+import RPi.GPIO as GPIO
+import spidev
 import sys
 import threading
 from time import sleep
-
-import RPi.GPIO as GPIO
-import spidev
 
 sys.path.append('/home/pi/vrrc')
 from main.event_queue import *
@@ -35,16 +34,16 @@ class Redray(threading.Thread):
         return (18.679 / voltage) - 4.774 if voltage != 0 else 0
 
     def switchBrake(self, dist):
-        if self.oldBrakeStatus != self.fireBrake:
-            braking = True if self.oldBrakeStatus else False
-            for observer in self.observers:
-                observer.update(braking)
-            self.oldBrakeStatus = self.fireBrake
-
         if 0.4 < dist and dist < 3:
             self.fireBrake = True
         else:
             self.fireBrake = False
+
+        if self.oldBrakeStatus != self.fireBrake:
+            braking = True if self.fireBrake else False
+            for observer in self.observers:
+                observer.update(braking)
+            self.oldBrakeStatus = self.fireBrake
         #print(self.fireBrake)
 
 
