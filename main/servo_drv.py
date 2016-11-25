@@ -11,7 +11,7 @@ SERVO_1_GPIO = 13  # GPIO13
 class ServoDriver(object):
     pin_values = {
         SERVO_0_GPIO: 0,
-        SERVO_1_GPIO: 0
+        SERVO_1_GPIO: 92        # 92:neutral, v < 88:forward, v > 96:reverse ??
     }
 
     def __init__(self, interval):
@@ -31,6 +31,7 @@ class ServoDriver(object):
 
     def stop(self):
         self.rt.stop()
+        self.writeValue("STOPPED")
 
     # target: SERVO_0_PIN or SERVO_1_PIN
     # defree: -90 〜 90
