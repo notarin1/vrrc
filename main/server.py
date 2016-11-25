@@ -14,7 +14,6 @@
 #
 import json
 import sys
-import threading
 import time
 
 import tornado.ioloop
@@ -25,7 +24,6 @@ from tornado.web import RequestHandler
 
 sys.path.append('/home/pi/vrrc')
 
-from main.event_queue import *
 from main.ir_driver import *
 from main.servo_drv import *
 from main.repeated_timer import *
