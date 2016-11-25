@@ -7,6 +7,7 @@ from main.utils import *
 SERVO_0_GPIO = 12       # GPIO12
 SERVO_1_GPIO = 13       # GPIO13
 
+STEERING_TRIM = 3       # +:Right, -:Left
 AMP_VALUE_NEUTRAL = 70  # neutral:アクセルオフ状態値
 AMP_RANGE = 10          # neutralから±AMP_RANGE 幅の値を出力する
 
@@ -58,11 +59,11 @@ class ServoDriver(object):
         row_value0 = self.clip(self.pin_values[SERVO_0_GPIO])
         row_value1 = self.clip_with_limit(self.pin_values[SERVO_1_GPIO], ESC_LIMITTER_VALUE)
 
-        servo_value = 81 - 41 * row_value0 / 2.5  # degree
+        servo_value = 81 - 41 * row_value0 / 2.5  # Left:40〜81〜122:Right
         esc_value = row_value1 * AMP_RANGE * ESC_LIMITTER_RATIO + AMP_VALUE_NEUTRAL
 
         # Steering制御
-        wiringpi.pwmWrite(SERVO_0_GPIO, int(servo_value))
+        wiringpi.pwmWrite(SERVO_0_GPIO, int(servo_value) + STEERING_TRIM)
 
         # AMP制御
         wiringpi.pwmWrite(SERVO_1_GPIO, int(esc_value))
