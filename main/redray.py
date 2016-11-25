@@ -31,6 +31,14 @@ class Redray(threading.Thread):
     def distance(self, voltage):
         return (18.679 / voltage) - 4.774 if voltage != 0 else 0
 
+    def switchBrake(self, dist):
+        if 1 < dist && dist < 5:
+            global fireBrake = True
+        else:
+            global fireBrake = False
+        print(fireBrake)
+
+
     def run(self):
         GPIO.setmode(GPIO.BCM)
         spi = spidev.SpiDev()
@@ -42,6 +50,7 @@ class Redray(threading.Thread):
                 volt = self.convert_voltage(inputVal0)
                 dist = (self.distance(volt))
                 print(" distance: {} ".format(dist))
+                switchBrake(dist)
                 enqueue_event(" distance: {} ".format(dist))
                 sleep(0.02)
         finally:

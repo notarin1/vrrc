@@ -116,6 +116,7 @@ health_check = RepeatedTimer(1, WSHandler.write_to_clients, "active")
 RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
 ir = IrDriver(ir_notify, 10)
 servo = ServoDriver(0.1)
+fireBrake = False
 
 if __name__ == "__main__":
     threads = []
