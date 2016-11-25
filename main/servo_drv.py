@@ -8,7 +8,7 @@ SERVO_0_GPIO = 12       # GPIO12
 SERVO_1_GPIO = 13       # GPIO13
 
 STEERING_TRIM = -6      # +:Left, -:Right
-AMP_VALUE_NEUTRAL = 70  # neutral:アクセルオフ状態値
+AMP_VALUE_NEUTRAL = 70  # # 0:neutral, v > 70:forward, v < 70:reverse neutral:アクセルオフ状態値
 AMP_RANGE = 10          # neutralから±AMP_RANGE 幅の値を出力する
 
 ESC_LIMITTER_RATIO = 0.7      # ESC出力をESC_LIMITTER % で絞る
@@ -17,7 +17,7 @@ ESC_LIMITTER_VALUE = 0.4
 class ServoDriver(object):
     pin_values = {
         SERVO_0_GPIO: 0,
-        SERVO_1_GPIO: AMP_VALUE_NEUTRAL  # 70:neutral, v > 70:forward, v < 70:reverse
+        SERVO_1_GPIO: 0
     }
 
     def __init__(self, interval):

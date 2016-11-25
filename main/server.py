@@ -89,9 +89,10 @@ def acceleration(value):
     print('------------ acceleration:')
     print(redray.fireBrake)
     if redray.fireBrake:
-        #servo.setValue(SERVO_1_GPIO, AMP_VALUE_NEUTRAL)
-        servo.setValue(SERVO_1_GPIO, 0)
-        #send_message("fire brake")
+        if value > 0:
+            servo.setValue(SERVO_1_GPIO, 0)
+        else:
+            servo.setValue(SERVO_1_GPIO, value)
     else:
         servo.setValue(SERVO_1_GPIO, value)
 
