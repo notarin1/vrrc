@@ -87,3 +87,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+*.idea
+*.iml
+
+#vim backup file
+*.swp
