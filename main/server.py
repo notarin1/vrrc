@@ -82,7 +82,10 @@ def steering(value):
 
 @logger
 def acceleration(value):
-    servo.setValue(SERVO_1_GPIO, value)
+    if fireBrake:
+        servo.setValue(SERVO_1_GPIO, 0)
+    else:
+        servo.setValue(SERVO_1_GPIO, value)
 
 
 application = tornado.web.Application([
@@ -101,7 +104,7 @@ health_check = RepeatedTimer(1, WSHandler.write_to_clients, "active")
 RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
 ir = IrDriver(ir_notify, 10)
 servo = ServoDriver(0.05)
-fireBrake = False
+fireBrake = False   # true:危ない！！ false:大丈夫
 
 if __name__ == "__main__":
     threads = []
