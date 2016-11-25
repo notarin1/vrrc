@@ -16,9 +16,6 @@ import json
 import sys
 import time
 
-import tornado.ioloop
-import tornado.template
-import tornado.web
 import tornado.websocket
 
 sys.path.append('/home/pi/vrrc')
@@ -88,10 +85,6 @@ def acceleration(value):
     servo.setValue(SERVO_1_GPIO, value)
 
 
-def acceralation(value):
-    servo.setValue(SERVO_1_GPIO, value)
-
-
 application = tornado.web.Application([
     (r'/ws', WSHandler),
     (r'/msg', SendMessageHandler),
@@ -107,7 +100,7 @@ command_dict = {
 health_check = RepeatedTimer(1, WSHandler.write_to_clients, "active")
 RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
 ir = IrDriver(ir_notify, 10)
-servo = ServoDriver(0.1)
+servo = ServoDriver(0.05)
 
 if __name__ == "__main__":
     threads = []
