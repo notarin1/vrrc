@@ -9,7 +9,8 @@ SERVO_1_GPIO = 13  # GPIO13
 
 AMP_VALUE_NEUTRAL = 70  # neutral:アクセルオフ状態値
 
-ESC_LIMITTER = 0.1      # ESC出力をESC_LIMITTER % で絞る
+ESC_LIMITTER_RATIO = 0.7      # ESC出力をESC_LIMITTER % で絞る
+ESC_LIMITTER_VALUE = 0.3
 
 class ServoDriver(object):
     pin_values = {
@@ -47,10 +48,10 @@ class ServoDriver(object):
 
     def writeValue(self, message):
         row_value0 = self.clip(self.pin_values[SERVO_0_GPIO])
-        row_value1 = self.clip(self.pin_values[SERVO_1_GPIO])
+        row_value1 = self.clip_with_limit(self.pin_values[SERVO_1_GPIO], ESC_LIMITTER_VALUE)
 
         servo_value = 81 + 41 * row_value0 / 3.0  # degree
-        esc_value = (row_value1 * 10 * ESC_LIMITTER) + AMP_VALUE_NEUTRAL
+        esc_value = (row_value1 * 10 * ESC_LIMITTER_RATIO) + AMP_VALUE_NEUTRAL
 
         # Steering制御
         wiringpi.pwmWrite(SERVO_0_GPIO, int(servo_value))
@@ -63,5 +64,13 @@ class ServoDriver(object):
             value = -1.0
         elif value > 1.0:
             value = 1.0
+
+        return value
+
+    def clip_with_limit(self, value, limit):
+        if value < -limit:
+            value = -limit
+        elif value > limit:
+            value = limit
 
         return value
