@@ -13,6 +13,7 @@ class Redray(threading.Thread):
     def __init__(self):
         super(Redray, self).__init__()
         self.running = True
+        self.fireBrake = False  # true:危ない！！ false:大丈夫
 
     # MCP3208からSPI通信で12ビットのデジタル値を取得。0から7の8チャンネル使用可
     def readadc_spidev(self, adcnum, spi):
@@ -34,9 +35,9 @@ class Redray(threading.Thread):
     def switchBrake(self, dist):
         global fireBrake
         if 0.4 < dist and dist < 3:
-            fireBrake = True
+            self.fireBrake = True
         else:
-            fireBrake = False
+            self.fireBrake = False
         print(fireBrake)
 
 

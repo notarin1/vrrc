@@ -86,7 +86,7 @@ def steering(value):
 
 @logger
 def acceleration(value):
-    if fireBrake:
+    if redray.fireBrake:
         servo.setValue(SERVO_1_GPIO, AMP_VALUE_NEUTRAL)
         send_message("fire brake")
     else:
@@ -113,12 +113,11 @@ health_check = RepeatedTimer(1, WSHandler.write_to_clients, "active")
 RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
 ir = IrDriver(ir_notify, 10)
 servo = ServoDriver(0.05)
-fireBrake = False  # true:危ない！！ false:大丈夫
+redray = Redray()
 
 if __name__ == "__main__":
     threads = []
     try:
-        redray = Redray()
         threads.append(redray)
         redray.start()
         application.listen(9090)
