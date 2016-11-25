@@ -4,10 +4,11 @@ import wiringpi
 from main.repeated_timer import RepeatedTimer
 from main.utils import *
 
-SERVO_0_GPIO = 12       # GPIO12
-SERVO_1_GPIO = 13       # GPIO13
+SERVO_0_GPIO = 12  # GPIO12
+SERVO_1_GPIO = 13  # GPIO13
 
 AMP_VALUE_NEUTRAL = 70  # neutral:アクセルオフ状態値
+
 
 class ServoDriver(object):
     pin_values = {
@@ -44,11 +45,22 @@ class ServoDriver(object):
         self.pin_values[target] = value
 
     def writeValue(self, message):
-        servo_value = 81 + 41 * self.pin_values[SERVO_0_GPIO] / 3.0         # degree
-        esc_value = self.pin_values[SERVO_1_GPIO] * 10 + AMP_VALUE_NEUTRAL
+        row_value0 = self.clip(self.pin_values[SERVO_0_GPIO])
+        row_value1 = self.clip(self.pin_values[SERVO_1_GPIO])
+
+        servo_value = 81 + 41 * row_value0 / 3.0  # degree
+        esc_value = row_value1 * 10 + AMP_VALUE_NEUTRAL
 
         # Steering制御
         wiringpi.pwmWrite(SERVO_0_GPIO, int(servo_value))
 
         # AMP制御
         wiringpi.pwmWrite(SERVO_1_GPIO, int(esc_value))
+
+    def clip(self, value):
+        if value < -1.0:
+            value = -1.0
+        elif value > 1.0:
+            value = 1.0
+
+        return value
