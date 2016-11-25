@@ -10,7 +10,7 @@ SERVO_1_GPIO = 13  # GPIO13
 AMP_VALUE_NEUTRAL = 70  # neutral:アクセルオフ状態値
 
 ESC_LIMITTER_RATIO = 0.7      # ESC出力をESC_LIMITTER % で絞る
-ESC_LIMITTER_VALUE = 0.3
+ESC_LIMITTER_VALUE = 0.5
 
 class ServoDriver(object):
     pin_values = {
