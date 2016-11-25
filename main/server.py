@@ -58,7 +58,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             for d in data:
                 self.write_message(d['command'] + ":" + str(d['value']))
                 command_dict.get(d['command'])(d['value'])
-                send_message(str(d['command']) + ":" + str(d['value']))
+#                send_message(str(d['command']) + ":" + str(d['value']))
 
     @logger
     def on_close(self):
