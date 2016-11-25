@@ -51,7 +51,7 @@ class Redray(threading.Thread):
                 volt = self.convert_voltage(inputVal0)
                 dist = (self.distance(volt))
                 print(" distance: {} ".format(dist))
-                switchBrake(dist)
+                self.switchBrake(dist)
                 enqueue_event(" distance: {} ".format(dist))
                 sleep(0.02)
         finally:
