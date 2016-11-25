@@ -24,6 +24,7 @@ from main.ir_driver import *
 from main.servo_drv import *
 from main.repeated_timer import *
 from main.redray import *
+from main.http_client import send_message
 
 
 # test用のhandler
@@ -31,7 +32,7 @@ class SendMessageHandler(tornado.web.RequestHandler):
     def get(self, *args):
         data = self.get_argument("data")
         if data is not None:
-            http_client(data)
+            send_message(data)
 
 
 class WSHandler(tornado.websocket.WebSocketHandler):
@@ -44,7 +45,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         self.write_message("The server says: 'Hello'. Connection was accepted.")
         self.clients.append(self)
-        http_client("open")
+        send_message("open")
         if len(self.clients) == 1:
             health_check.start()
             servo.start()
@@ -57,12 +58,12 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             for d in data:
                 self.write_message(d['command'] + ":" + str(d['value']))
                 command_dict.get(d['command'])(d['value'])
-                http_client(str(d['command']) + ":" + str(d['value']))
+                send_message(str(d['command']) + ":" + str(d['value']))
 
     @logger
     def on_close(self):
         self.clients.remove(self)
-        http_client("on_close")
+        send_message("on_close")
         if len(self.clients) == 0:
             health_check.stop()
             ir.stop()
@@ -101,18 +102,6 @@ command_dict = {
     'steering': steering,
     'acceleration': acceleration
 }
-
-
-def http_client(text):
-    data = {"text": text}
-    headers = tornado.httputil.HTTPHeaders({"content-type": "application/json; charset=utf-8"})
-    request = tornado.httpclient.HTTPRequest(
-        url="https://line-bot-hirakida.herokuapp.com/api/textMessage",
-        method="POST", body=json.dumps(data),
-        headers=headers,
-        validate_cert=False)
-    client = tornado.httpclient.AsyncHTTPClient()
-    client.fetch(request)
 
 
 # GPIO.setmode(GPIO.BCM)
