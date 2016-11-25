@@ -7,7 +7,7 @@ from main.utils import *
 SERVO_0_GPIO = 12       # GPIO12
 SERVO_1_GPIO = 13       # GPIO13
 
-STEERING_TRIM = 3       # +:Right, -:Left
+STEERING_TRIM = -3      # +:Left, -:Right
 AMP_VALUE_NEUTRAL = 70  # neutral:アクセルオフ状態値
 AMP_RANGE = 10          # neutralから±AMP_RANGE 幅の値を出力する
 
