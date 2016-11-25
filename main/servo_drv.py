@@ -58,7 +58,7 @@ class ServoDriver(object):
         row_value0 = self.clip(self.pin_values[SERVO_0_GPIO])
         row_value1 = self.clip_with_limit(self.pin_values[SERVO_1_GPIO], ESC_LIMITTER_VALUE)
 
-        servo_value = 81 + 41 * row_value0 / 3.0  # degree
+        servo_value = 81 - 41 * row_value0 / 2.5  # degree
         esc_value = row_value1 * AMP_RANGE * ESC_LIMITTER_RATIO + AMP_VALUE_NEUTRAL
 
         # Steering制御
