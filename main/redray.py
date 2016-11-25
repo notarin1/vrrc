@@ -33,12 +33,12 @@ class Redray(threading.Thread):
         return (18.679 / voltage) - 4.774 if voltage != 0 else 0
 
     def switchBrake(self, dist):
-        global fireBrake
+        #global fireBrake
         if 0.4 < dist and dist < 3:
             self.fireBrake = True
         else:
             self.fireBrake = False
-        print(fireBrake)
+        #print(self.fireBrake)
 
 
     def run(self):
@@ -54,6 +54,6 @@ class Redray(threading.Thread):
                 print(" distance: {} ".format(dist))
                 self.switchBrake(dist)
                 enqueue_event(" distance: {} ".format(dist))
-                sleep(0.02)
+                sleep(0.5)
         finally:
             spi.close()

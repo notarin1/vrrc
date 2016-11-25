@@ -58,7 +58,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             for d in data:
                 self.write_message(d['command'] + ":" + str(d['value']))
                 command_dict.get(d['command'])(d['value'])
-                #                send_message(str(d['command']) + ":" + str(d['value']))
+                #send_message(str(d['command']) + ":" + str(d['value']))
 
     @logger
     def on_close(self):
@@ -86,9 +86,12 @@ def steering(value):
 
 @logger
 def acceleration(value):
+    print('------------ acceleration:')
+    print(redray.fireBrake)
     if redray.fireBrake:
-        servo.setValue(SERVO_1_GPIO, AMP_VALUE_NEUTRAL)
-        send_message("fire brake")
+        #servo.setValue(SERVO_1_GPIO, AMP_VALUE_NEUTRAL)
+        servo.setValue(SERVO_1_GPIO, 0)
+        #send_message("fire brake")
     else:
         servo.setValue(SERVO_1_GPIO, value)
 

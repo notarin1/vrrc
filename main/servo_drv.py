@@ -12,7 +12,7 @@ AMP_VALUE_NEUTRAL = 70  # neutral:アクセルオフ状態値
 AMP_RANGE = 10          # neutralから±AMP_RANGE 幅の値を出力する
 
 ESC_LIMITTER_RATIO = 0.7      # ESC出力をESC_LIMITTER % で絞る
-ESC_LIMITTER_VALUE = 0.5
+ESC_LIMITTER_VALUE = 0.4
 
 class ServoDriver(object):
     pin_values = {
