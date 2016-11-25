@@ -105,12 +105,14 @@ command_dict = {
 
 def http_client(text):
     data = {"text": text}
+    headers = tornado.httputil.HTTPHeaders({"content-type": "application/json; charset=utf-8"})
     request = tornado.httpclient.HTTPRequest(
-        url="line-bot-hirakida.herokuapp.com/api/textMessage",
-        method="POST", body=data,
-        follow_redirects=False,
-        allow_nonstandard_methods=True)
+        url="https://line-bot-hirakida.herokuapp.com/api/textMessage",
+        method="POST", body=json.dumps(data),
+        headers=headers,
+        validate_cert=False)
     client = tornado.httpclient.AsyncHTTPClient()
+    client.fetch(request)
 
 
 # GPIO.setmode(GPIO.BCM)
