@@ -24,7 +24,7 @@ from main.ir_driver import *
 from main.servo_drv import *
 from main.repeated_timer import *
 from main.redray import *
-from main.http_client import send_message
+from main.http_client import send_message, send_alert_sticker
 from main.observer import *
 
 
@@ -84,7 +84,7 @@ class AutoBrake(Observer):
     def update(self, braking):
         if braking:
             servo.setValue(SERVO_1_GPIO, -10)
-            send_message("braking")
+            send_alert_sticker()
         else:
             send_message("avoid object")
 
