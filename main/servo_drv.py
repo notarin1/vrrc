@@ -4,14 +4,15 @@ import wiringpi
 from main.repeated_timer import RepeatedTimer
 from main.utils import *
 
-SERVO_0_GPIO = 12  # GPIO12
-SERVO_1_GPIO = 13  # GPIO13
+SERVO_0_GPIO = 12       # GPIO12
+SERVO_1_GPIO = 13       # GPIO13
 
+AMP_VALUE_NEUTRAL = 70  # neutral:アクセルオフ状態値
 
 class ServoDriver(object):
     pin_values = {
         SERVO_0_GPIO: 0,
-        SERVO_1_GPIO: 92        # 92:neutral, v < 88:forward, v > 96:reverse ??
+        SERVO_1_GPIO: AMP_VALUE_NEUTRAL  # 70:neutral, v > 70:forward, v < 70:reverse
     }
 
     def __init__(self, interval):
@@ -43,12 +44,12 @@ class ServoDriver(object):
         self.pin_values[target] = value
 
     def writeValue(self, message):
-        servo0_value = self.pin_values[SERVO_0_GPIO]
-        servo1_value = self.pin_values[SERVO_1_GPIO]
+        servo_value = self.pin_values[SERVO_0_GPIO]
+        esc_value = self.pin_values[SERVO_1_GPIO] * 10 + AMP_VALUE_NEUTRAL
 
         # Steering制御
-        move_deg = int(81 + 41 / 90 * servo0_value)
+        move_deg = int(81 + 41 * servo_value)
         wiringpi.pwmWrite(SERVO_0_GPIO, move_deg)
 
         # AMP制御
-        wiringpi.pwmWrite(SERVO_1_GPIO, servo1_value)
+        wiringpi.pwmWrite(SERVO_1_GPIO, int(esc_value))

@@ -83,7 +83,7 @@ def steering(value):
 @logger
 def acceleration(value):
     if fireBrake:
-        servo.setValue(SERVO_1_GPIO, 0)
+        servo.setValue(SERVO_1_GPIO, AMP_VALUE_NEUTRAL)
     else:
         servo.setValue(SERVO_1_GPIO, value)
 
