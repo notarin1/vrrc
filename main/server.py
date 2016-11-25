@@ -31,7 +31,7 @@ class SendMessageHandler(tornado.web.RequestHandler):
     def get(self, *args):
         data = self.get_argument("data")
         if data is not None:
-            enqueue_event(data)
+            http_client(data)
 
 
 class WSHandler(tornado.websocket.WebSocketHandler):
@@ -44,6 +44,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         self.write_message("The server says: 'Hello'. Connection was accepted.")
         self.clients.append(self)
+        http_client("open")
         if len(self.clients) == 1:
             health_check.start()
             servo.start()
@@ -56,10 +57,12 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             for d in data:
                 self.write_message(d['command'] + ":" + str(d['value']))
                 command_dict.get(d['command'])(d['value'])
+                http_client(str(d['command']) + ":" + str(d['value']))
 
     @logger
     def on_close(self):
         self.clients.remove(self)
+        http_client("on_close")
         if len(self.clients) == 0:
             health_check.stop()
             ir.stop()
@@ -99,6 +102,17 @@ command_dict = {
     'acceleration': acceleration
 }
 
+
+def http_client(text):
+    data = {"text": text}
+    request = tornado.httpclient.HTTPRequest(
+        url="line-bot-hirakida.herokuapp.com/api/textMessage",
+        method="POST", body=data,
+        follow_redirects=False,
+        allow_nonstandard_methods=True)
+    client = tornado.httpclient.AsyncHTTPClient()
+
+
 # GPIO.setmode(GPIO.BCM)
 # GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 # GPIO.add_event_detect(24, GPIO.RISING, callback=deploy, bouncetime=400)
@@ -108,7 +122,7 @@ health_check = RepeatedTimer(1, WSHandler.write_to_clients, "active")
 RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
 ir = IrDriver(ir_notify, 10)
 servo = ServoDriver(0.05)
-fireBrake = False   # true:危ない！！ false:大丈夫
+fireBrake = False  # true:危ない！！ false:大丈夫
 
 if __name__ == "__main__":
     threads = []
