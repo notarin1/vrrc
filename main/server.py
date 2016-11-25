@@ -24,6 +24,7 @@ from main.ir_driver import *
 from main.servo_drv import *
 from main.repeated_timer import *
 from main.redray import *
+from main.deploy import *
 
 
 # test用のhandler
@@ -98,6 +99,10 @@ command_dict = {
     'steering': steering,
     'acceleration': acceleration
 }
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.add_event_detect(24, GPIO.RISING, callback=deploy, bouncetime=400)
 
 # interval push message sample
 health_check = RepeatedTimer(1, WSHandler.write_to_clients, "active")

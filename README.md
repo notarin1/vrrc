@@ -8,6 +8,10 @@ pw: raspberry
 # ラズパイ側パス
 cd /home/pi/vrrc  
 
+# server起動
+sudo ~/local/python-3.5.2/bin/python main/server.py  
+※sudoしないとwiringpiが使えないで  
+
 # ライブラリinstallについて
 1. requirements.txtにライブラリ名==バージョン の行を足す
 2. pip install -r requirements.txt
