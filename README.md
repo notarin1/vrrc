@@ -28,9 +28,9 @@ steering: -1.0〜1.0
 acceleration: -1.0〜1.0  
 
 内部的にはそれぞれ
-steering: 40〜122
+steering: 40〜122  
 acceleration: 60(reverse)〜70(neutral)〜80(forward)  
-でGPIOにPWM出力してます
+でGPIOにPWM出力してます  
 
 例：
 ```
