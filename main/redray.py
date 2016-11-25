@@ -32,10 +32,11 @@ class Redray(threading.Thread):
         return (18.679 / voltage) - 4.774 if voltage != 0 else 0
 
     def switchBrake(self, dist):
-        if 1 < dist and dist < 5:
-            global fireBrake = True
+        global fireBrake
+        if 0.4 < dist and dist < 3:
+            fireBrake = True
         else:
-            global fireBrake = False
+            fireBrake = False
         print(fireBrake)
 
 
