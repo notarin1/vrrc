@@ -25,6 +25,7 @@ from main.servo_drv import *
 from main.repeated_timer import *
 from main.redray import *
 from main.http_client import send_message
+from main.observer import *
 
 
 # test用のhandler
@@ -35,7 +36,7 @@ class SendMessageHandler(tornado.web.RequestHandler):
             send_message(data)
 
 
-class WSHandler(tornado.websocket.WebSocketHandler):
+class WSHandler(tornado.websocket.WebSocketHandler, Observer):
     clients = []
 
     def check_origin(self, origin):
@@ -68,6 +69,13 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             health_check.stop()
             ir.stop()
             servo.stop()
+
+    def update(self, braking):
+        if braking:
+            servo.setValue(SERVO_1_GPIO, -10)
+            send_message("braking")
+        else:
+            send_message("avoid object")
 
     @classmethod
     def write_to_clients(cls, message):
