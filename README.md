@@ -2,8 +2,11 @@
 VRラジコン用
 
 # SSH情報
-ssh pi@172.16.2.159
-pw: raspberry
+ssh pi@172.16.2.159  
+pw: raspberry  
+
+# ラズパイ側パス
+cd /home/pi/vrrc  
 
 # ライブラリinstallについて
 1. requirements.txtにライブラリ名==バージョン の行を足す
