@@ -19,10 +19,9 @@ Chromeのwebsocketお試しplugin を使うとテストしやすい
 https://chrome.google.com/webstore/detail/simple-websocket-client/pfdhoblngboilpfeibdedpjgfnlcodoo
 
 # websocket message format
-JSON。
-command&valueの配列を垂れ流しで送信
-steering: -30〜30まで
-acceleration: ??〜??
+JSON。command&valueの配列を垂れ流しで送信  
+steering: -30〜30まで  
+acceleration: ??〜??  
 
 例：
 ```
