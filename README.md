@@ -21,6 +21,8 @@ https://chrome.google.com/webstore/detail/simple-websocket-client/pfdhoblngboilp
 # websocket message format
 JSON。
 command&valueの配列を垂れ流しで送信
+steering: -30〜30まで
+acceleration: ??〜??
 
 例：
 ```
@@ -30,8 +32,8 @@ command&valueの配列を垂れ流しで送信
     "value": 35
   },
   {
-    "command": "acceralation",
-    "value": 20
+    "command": "acceleration",
+    "value": 50
   },
   {
     "command": "steering",
