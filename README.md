@@ -2,8 +2,11 @@
 VRラジコン用
 
 # SSH情報
-ssh pi@172.16.2.159
-pw: raspberry
+ssh pi@172.16.2.159  
+pw: raspberry  
+
+# ラズパイ側パス
+cd /home/pi/vrrc  
 
 # ライブラリinstallについて
 1. requirements.txtにライブラリ名==バージョン の行を足す
@@ -16,8 +19,9 @@ Chromeのwebsocketお試しplugin を使うとテストしやすい
 https://chrome.google.com/webstore/detail/simple-websocket-client/pfdhoblngboilpfeibdedpjgfnlcodoo
 
 # websocket message format
-JSON。
-command&valueの配列を垂れ流しで送信
+JSON。command&valueの配列を垂れ流しで送信  
+steering: -30〜30まで  
+acceleration: ??〜??  
 
 例：
 ```
@@ -27,8 +31,8 @@ command&valueの配列を垂れ流しで送信
     "value": 35
   },
   {
-    "command": "acceralation",
-    "value": 20
+    "command": "acceleration",
+    "value": 50
   },
   {
     "command": "steering",
