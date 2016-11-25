@@ -32,11 +32,18 @@ class ServoDriver(object):
         self.rt = RepeatedTimer(interval, self.writeValue, "SERVO")
 
     def start(self):
+        self.reset()
         self.rt.start()
 
     def stop(self):
         self.rt.stop()
-        self.writeValue("STOPPED")
+        self.reset()
+
+    @logger
+    def reset(self):
+        self.setValue(SERVO_0_GPIO, 0)
+        self.setValue(SERVO_1_GPIO, 0)
+        self.writeValue("RESET")
 
     # target: SERVO_0_PIN or SERVO_1_PIN
     # defree: -90 〜 90
