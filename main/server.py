@@ -87,10 +87,6 @@ def acceleration(value):
     servo.setValue(SERVO_1_GPIO, value)
 
 
-def acceralation(value):
-    servo.setValue(SERVO_1_GPIO, value)
-
-
 # test用のhandler
 class SendMessageHandler(RequestHandler):
     def get(self, *args):
@@ -115,7 +111,7 @@ command_dict = {
 health_check = RepeatedTimer(1, WSHandler.write_to_clients, "active")
 RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
 ir = IrDriver(ir_notify, 10)
-servo = ServoDriver(0.1)
+servo = ServoDriver(0.05)
 
 if __name__ == "__main__":
     threads = []
