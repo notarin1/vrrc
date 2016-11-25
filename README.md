@@ -24,23 +24,28 @@ https://chrome.google.com/webstore/detail/simple-websocket-client/pfdhoblngboilp
 
 # websocket message format
 JSON。command&valueの配列を垂れ流しで送信  
-steering: -30〜30まで  
-acceleration: ??〜??  
+steering: -1.0〜1.0  
+acceleration: -1.0〜1.0  
+
+内部的にはそれぞれ
+steering: 40〜122
+acceleration: 60(reverse)〜70(neutral)〜80(forward)  
+でGPIOにPWM出力してます
 
 例：
 ```
 [
   {
     "command": "steering",
-    "value": 35
+    "value": -0.7677
   },
   {
     "command": "acceleration",
-    "value": 50
+    "value": 0.6032
   },
   {
     "command": "steering",
-    "value": 37
+    "value": -0.6998
   },
   ...
 ]
