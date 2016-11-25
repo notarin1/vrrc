@@ -16,11 +16,7 @@ import json
 import sys
 import time
 
-import tornado.ioloop
-import tornado.template
-import tornado.web
 import tornado.websocket
-from tornado.web import RequestHandler
 
 sys.path.append('/home/pi/vrrc')
 
@@ -30,10 +26,12 @@ from main.repeated_timer import *
 from main.redray import *
 
 
-class MainHandler(tornado.web.RequestHandler):
-    def get(self):
-        loader = tornado.template.Loader(".")
-        self.write(loader.load("index.html").generate())
+# test用のhandler
+class SendMessageHandler(tornado.web.RequestHandler):
+    def get(self, *args):
+        data = self.get_argument("data")
+        if data is not None:
+            enqueue_event(data)
 
 
 class WSHandler(tornado.websocket.WebSocketHandler):
@@ -87,21 +85,8 @@ def acceleration(value):
     servo.setValue(SERVO_1_GPIO, value)
 
 
-def acceralation(value):
-    servo.setValue(SERVO_1_GPIO, value)
-
-
-# test用のhandler
-class SendMessageHandler(RequestHandler):
-    def get(self, *args):
-        data = self.get_argument("data")
-        if data is not None:
-            enqueue_event(data)
-
-
 application = tornado.web.Application([
     (r'/ws', WSHandler),
-    (r'/', MainHandler),
     (r'/msg', SendMessageHandler),
     (r"/(.*)", tornado.web.StaticFileHandler, {"path": "./resources"}),
 ])
@@ -115,7 +100,7 @@ command_dict = {
 health_check = RepeatedTimer(1, WSHandler.write_to_clients, "active")
 RepeatedTimer(0.1, queue_routine, WSHandler.write_to_clients)
 ir = IrDriver(ir_notify, 10)
-servo = ServoDriver(0.1)
+servo = ServoDriver(0.05)
 fireBrake = False
 
 if __name__ == "__main__":
