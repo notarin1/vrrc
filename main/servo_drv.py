@@ -44,12 +44,11 @@ class ServoDriver(object):
         self.pin_values[target] = value
 
     def writeValue(self, message):
-        servo_value = self.pin_values[SERVO_0_GPIO]
+        servo_value = 81 + 41 * self.pin_values[SERVO_0_GPIO] / 3.0         # degree
         esc_value = self.pin_values[SERVO_1_GPIO] * 10 + AMP_VALUE_NEUTRAL
 
         # Steering制御
-        move_deg = int(81 + 41 * servo_value)
-        wiringpi.pwmWrite(SERVO_0_GPIO, move_deg)
+        wiringpi.pwmWrite(SERVO_0_GPIO, int(servo_value))
 
         # AMP制御
         wiringpi.pwmWrite(SERVO_1_GPIO, int(esc_value))
