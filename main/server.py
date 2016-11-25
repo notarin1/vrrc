@@ -58,7 +58,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             for d in data:
                 self.write_message(d['command'] + ":" + str(d['value']))
                 command_dict.get(d['command'])(d['value'])
-#                send_message(str(d['command']) + ":" + str(d['value']))
+                #                send_message(str(d['command']) + ":" + str(d['value']))
 
     @logger
     def on_close(self):
@@ -88,6 +88,7 @@ def steering(value):
 def acceleration(value):
     if fireBrake:
         servo.setValue(SERVO_1_GPIO, AMP_VALUE_NEUTRAL)
+        send_message("fire brake")
     else:
         servo.setValue(SERVO_1_GPIO, value)
 
@@ -102,7 +103,6 @@ command_dict = {
     'steering': steering,
     'acceleration': acceleration
 }
-
 
 # GPIO.setmode(GPIO.BCM)
 # GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
