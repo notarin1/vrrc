@@ -20,7 +20,6 @@ import tornado.ioloop
 import tornado.template
 import tornado.web
 import tornado.websocket
-from tornado.web import RequestHandler
 
 sys.path.append('/home/pi/vrrc')
 
@@ -30,10 +29,12 @@ from main.repeated_timer import *
 from main.redray import *
 
 
-class MainHandler(tornado.web.RequestHandler):
-    def get(self):
-        loader = tornado.template.Loader(".")
-        self.write(loader.load("index.html").generate())
+# test用のhandler
+class SendMessageHandler(tornado.web.RequestHandler):
+    def get(self, *args):
+        data = self.get_argument("data")
+        if data is not None:
+            enqueue_event(data)
 
 
 class WSHandler(tornado.websocket.WebSocketHandler):
@@ -91,17 +92,8 @@ def acceralation(value):
     servo.setValue(SERVO_1_GPIO, value)
 
 
-# test用のhandler
-class SendMessageHandler(RequestHandler):
-    def get(self, *args):
-        data = self.get_argument("data")
-        if data is not None:
-            enqueue_event(data)
-
-
 application = tornado.web.Application([
     (r'/ws', WSHandler),
-    (r'/', MainHandler),
     (r'/msg', SendMessageHandler),
     (r"/(.*)", tornado.web.StaticFileHandler, {"path": "./resources"}),
 ])
