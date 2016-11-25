@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import wiringpi
-import main.RepeatedTimer as RepeatedTimer
 
+from main.repeated_timer import RepeatedTimer
 from main.utils import *
 
 SERVO_0_GPIO = 12  # GPIO12
@@ -24,7 +24,7 @@ class ServoDriver(object):
         wiringpi.pwmSetRange(1024)
         wiringpi.pwmSetClock(375)
         pass
-        self.rt = RepeatedTimer.RepeatedTimer(interval, self.writeValue, "SERVO")
+        self.rt = RepeatedTimer(interval, self.writeValue, "SERVO")
 
     def start(self):
         self.rt.start()

@@ -14,6 +14,8 @@
 #
 import json
 import sys
+import threading
+import time
 
 import tornado.ioloop
 import tornado.template
@@ -23,10 +25,11 @@ from tornado.web import RequestHandler
 
 sys.path.append('/home/pi/vrrc')
 
-from main.EventQueue import *
-from main.IrDriver import *
+from main.event_queue import *
+from main.ir_driver import *
 from main.servo_drv import *
-from main.RepeatedTimer import *
+from main.repeated_timer import *
+from main.redray import *
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -119,7 +122,7 @@ servo = ServoDriver(0.1)
 if __name__ == "__main__":
     threads = []
     try:
-        redray = main.Redray()
+        redray = Redray()
         threads.append(redray)
         redray.start()
         application.listen(9090)
@@ -131,4 +134,4 @@ if __name__ == "__main__":
             thread.running = False
         while threading.active_count() > 1:
             print("waiting shutdown. thread count={}".format(threading.active_count()))
-            sleep(1)
+            time.sleep(1)

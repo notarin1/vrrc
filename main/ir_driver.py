@@ -1,6 +1,6 @@
 # 通知コールバックをnotify_callbackに設定する
 # 何か
-import main.RepeatedTimer
+from main.repeated_timer import RepeatedTimer
 
 
 class IrDriver:
@@ -9,7 +9,7 @@ class IrDriver:
     def __init__(self, notify_callback, threshold):
         self.threshold = threshold
         self.notify_callback = notify_callback
-        self.rt = main.RepeatedTimer.RepeatedTimer(0.2, self.check_ir, "IR")
+        self.rt = RepeatedTimer(0.2, self.check_ir, "IR")
 
     def start(self):
         self.rt.start()
