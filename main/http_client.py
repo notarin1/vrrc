@@ -40,10 +40,14 @@ def send_stop_sticker():
 
 
 def send_sticker(path):
+    data = {"text": "dummy"}
+    headers = tornado.httputil.HTTPHeaders({"content-type": "application/json; charset=utf-8"})
     url = "https://line-bot-hirakida.herokuapp.com/api/stickerMessage/" + path
     request = tornado.httpclient.HTTPRequest(
         url=url,
         method="POST",
+        body=json.dumps(data),
+        headers=headers,
         validate_cert=False)
     client = tornado.httpclient.AsyncHTTPClient()
     client.fetch(request)
