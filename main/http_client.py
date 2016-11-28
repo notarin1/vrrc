@@ -5,10 +5,20 @@ import tornado.httputil
 
 
 def send_message(text):
+    url = "https://line-bot-hirakida.herokuapp.com/api/textMessage"
+    send_text(text, url)
+
+
+def send_log(text):
+    url = "https://line-bot-hirakida.herokuapp.com/api/textMessage/logging"
+    send_text(text, url)
+
+
+def send_text(text, url):
     data = {"text": text}
     headers = tornado.httputil.HTTPHeaders({"content-type": "application/json; charset=utf-8"})
     request = tornado.httpclient.HTTPRequest(
-        url="https://line-bot-hirakida.herokuapp.com/api/textMessage",
+        url=url,
         method="POST",
         body=json.dumps(data),
         headers=headers,
@@ -18,18 +28,18 @@ def send_message(text):
 
 
 def send_alert_sticker():
-    send("alert")
+    send_sticker("alert")
 
 
 def send_start_sticker():
-    send("start")
+    send_sticker("start")
 
 
 def send_stop_sticker():
-    send("stop")
+    send_sticker("stop")
 
 
-def send(path):
+def send_sticker(path):
     url = "https://line-bot-hirakida.herokuapp.com/api/stickerMessage/" + path
     headers = tornado.httputil.HTTPHeaders({"content-type": "application/json; charset=utf-8"})
     request = tornado.httpclient.HTTPRequest(
